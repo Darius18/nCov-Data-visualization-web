@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html>
+<head>
+    <title>中国加油</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+</head>
+
+<body>
+
+</body>
+<script>
+
+function day(x){
+    a = parseInt(x)
+    date = new Date(a);
+    M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '月';
+    D = date.getDate() + '日';
+    return M+D
+}
+
+
+function province(data){
+    var timeSequence = new Array();
+    var confirmedSequence = new Array();
+    var curedSequence = new Array();
+    var deadSequence = new Array();
+    var suspectedSequence = new Array()
+    for(i=0,j=0;i<(data.results).length;i++){
+        
+        if(timeSequence[j-1]==day(data.results[i].updateTime)){
+
+        }else{
+            timeSequence[j] = day(data.results[i].updateTime)
+            confirmedSequence[j] = data.results[i].confirmedCount
+            curedSequence[j] = data.results[i].curedCount
+            deadSequence[j] = data.results[i].deadCount
+            suspectedSequence[j] = data.results[i].suspectedCount
+            j++
+        }
+    }
+    
+    console.log(timeSequence)
+    // console.log(confirmedSequence)
+    // console.log(curedSequence)
+    // console.log(deadSequence)
+    // console.log(suspectedSequence)
+}
+
+function all(data){
+    var timeSequence = new Array();
+    var confirmedSequence = new Array();
+    var curedSequence = new Array();
+    var deadSequence = new Array();
+    var suspectedSequence = new Array()
+    for(i=0,j=0;i<(data.results).length;i++){
+        
+        if(timeSequence[j-1]==day(data.results[i].updateTime)){
+
+        }else{
+            timeSequence[j] = day(data.results[i].updateTime)
+            confirmedSequence[j] = data.results[i].confirmedCount
+            curedSequence[j] = data.results[i].curedCount
+            deadSequence[j] = data.results[i].deadCount
+            suspectedSequence[j] = data.results[i].suspectedCount
+            j++
+        }
+    }
+
+    console.log(confirmedSequence)
+}
+
+
+testData = null
+$.ajax({
+        type: "GET", //GET还是POST,不是必须
+        url: "data/overall.json",
+        success: function(data) {
+            testData = data
+        }
+    });
+
+province(testData)
+ 
+// $.ajax({
+//         url:"https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=河南省",
+//         type:"GET",
+//         datatype:"text",
+//         success:function(data){
+
+            
+//         },
+//         error:function(jqXHR){
+//             alert("OOPS！数据请求失败"+jqXHR.status);
+//         }
+//     })
+
+
+</script>
+
+</html>

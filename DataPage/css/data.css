@@ -1,0 +1,213 @@
+/* star back */
+body {
+    background-image: url(../images/page-img/body-back.jpg);
+    /* background: radial-gradient(200% 100% at bottom center, #0070aa, #0b2570, #000035, #000);
+    background: radial-gradient(220% 105% at top center, #000 10%, #000035 40%, #0b2570 65%, #0070aa); */
+    background-attachment: fixed;
+    overflow: hidden;
+    padding: 20px;
+    -webkit-animation:fadeIn 1s .2s ease both;  -moz-animation:fadeIn 1s .2s ease both;
+    animation: fadeIn 1s .2s ease both;
+    background-size:100%;
+    /* background-size: cover; */
+    background-repeat: no-repeat;
+    
+  }
+  @-webkit-keyframes fadeIn{ 0%{opacity:0; } 100%{opacity:1;} }
+
+  @keyframes rotate {
+    0% {
+      transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(0);
+    }
+    100% {
+      transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(-360deg);
+    }
+  }
+  /* .stars {
+    transform: perspective(500px);
+    transform-style: preserve-3d;
+    position: absolute;
+    bottom: 0;
+    perspective-origin: 50% 100%;
+    left: 50%;
+    animation: rotate 90s infinite linear;
+    z-index: -1;
+  }
+
+  .star {
+    width: 2px;
+    height: 2px;
+    background: #F7F7B6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0 -300px;
+    transform: translate3d(0, 0, -300px);
+    backface-visibility: hidden;
+  } */
+
+.testborder{
+  border:white 2px solid;
+  box-shadow:1px 2px 20px 7px rgba(23, 229, 252, 0.529);
+  border-radius: 5px;
+}
+/* map */
+#map{
+    width: auto;
+    height: 200px;
+ 
+}
+.svgMap path:hover{
+    fill:blue;
+    transition: .5s;
+} 
+.svgMap{
+    /* margin-left: 100px; */
+    height: 500px;
+    position: relative;
+    /* z-index: 3; */
+    top: -100px;
+}
+.svgMap svg{
+  background-image: url(../images/data-img/map-back.png);
+  background-repeat: no-repeat;
+  background-position-x: -8px;
+  background-position-y: -15px;
+}
+
+#provinces{
+    width: 100%;
+    height: 300px;
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 2;
+    padding:10px;
+    background-image: url(../images/data-img/province-back.png);
+}
+
+/* occupation */
+
+#occupation{
+  height: 200px;
+  width: 100%;
+  padding: 10px;
+  top: 20px;
+}
+
+/* 全国三种疾病分类 发病率死亡率 */
+
+#rightBottomBar{
+  width: 100%;
+  /* padding: 10px; */
+  margin-top: 20px;
+  height: 230px;
+}
+#BarChartBox{
+    height: 200px;
+    width: 100%;
+    
+}
+#tabBarChart{
+    width: 100%;
+    height: auto;
+    /* background: black; */
+    position: relative;
+    top: 0px;
+}
+#tabBarChart li{
+    color: rgb(255, 255, 255);
+    list-style: none;
+    float: left;
+    margin-right: 20px;
+    font-size: 10px;
+    width: fit-content;
+    padding: 1px 6px;;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+#tabBarChart li:hover{
+    background: #14c8d4;
+}
+
+#tabBarChart ul{
+    margin: 0 auto;
+    width: fit-content;
+    height: auto;
+    padding: 0;
+}
+
+/* 曲线图 */
+#curve{
+  padding-top: 10px;
+  width: 100%;
+  height: 240px;
+}
+
+/* 仪表盘 */
+.panel{
+  width: 250px;
+  height: 250px;
+  position: relative;
+  top: -60px;
+  /* margin-bottom: 55px; */
+}
+.panel canvas{
+   border-radius: 10px;
+  /*box-shadow:1px 2px 13px 0px rgba(23, 229, 252, 0.529); */
+  background-image: url(../images/data-img/panel-back.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: .3s;
+}
+
+.panel canvas:hover{
+  box-shadow:1px 2px 20px 7px rgba(23, 229, 252, 0.529);
+}
+
+/* 职业极坐标 */
+#polar{
+  width: 100%;
+  height: 260px;
+  margin-top: 20px;
+  padding:10px;
+}
+
+/* 雷达图 */
+#radar {
+  /* margin: 0 auto; */
+  height: 240px;
+  width: 100%;
+
+}
+
+#circle {
+  text-align: center;
+  margin: 0 auto;
+  position: relative;
+  width: 100%;
+  height: 30px;
+  /* background-color: #EEEEEE; */
+  top: 0;
+}
+#circle ul{
+  margin: 0 auto;
+  width: fit-content;
+  height: auto;
+  padding: 0;
+}
+#circle ul li{
+  float: left;
+  list-style: none;
+  margin-right: 10px;
+  font-size: 10px;
+	color: ghostwhite;
+  width: fit-content;
+  padding: 1px 6px;;
+  border-radius: 50px;
+  cursor: pointer;
+}
+#circle ul li:hover{
+  background-color: #D48265;
+}

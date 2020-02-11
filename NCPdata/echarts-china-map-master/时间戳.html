@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html>
+<head>
+    <title>时间戳</title>
+
+</head>
+
+<body>
+    <div id="bigMap" style="height: 800px;"></div>
+</body>
+<script>
+    var date = new Date(1580544544135);
+Y = date.getFullYear() + '-';
+M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+D = date.getDate() + ' ';
+h = date.getHours() + ':';
+m = date.getMinutes() + ':';
+s = date.getSeconds(); 
+console.log(Y+M+D+h+m+s); //呀麻碟
+</script>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<!-- <link rel="icon" href="https://jscdn.com.cn/highcharts/images/favicon.ico"> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://code.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
+	<script src="https://code.highcharts.com.cn/highmaps/highmaps.js"></script>
+	<script src="https://code.highcharts.com.cn/highcharts/modules/drilldown.js"></script>
+	<script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+	<style>
+		/* tspan{
+		display: none
+		
+	} */
+	</style>
+</head>
+
+<body>
+	<div id="container" style="height:800px; "></div>
+
+	<script>
+		var province = new Array();
+		var confirmedCountOfProvince = new Array();//每个省的发病数量
+
+		var city = new Array();
+		var confirmedCountOfCity = new Array();//每个市的发病数量，因为只能查询一个省，所以把该省的数据作为全局
+
+
+		$.ajax({
+			type: "GET", //GET还是POST,不是必须
+			url: "data/dataAreaNew.json",
+			success: function (data) {
+				get_allChina_provinces(data)
+			}
+		});
+		//获得全国省份和对应的数量
+		function get_allChina_provinces(data) {
+			for (i = 0, j = 0; i < (data.results).length; i++) {
+				if (data.results[i].country == "中国") {
+					province[j] = data.results[i].provinceShortName
+					confirmedCountOfProvince[j]= data.results[i].confirmedCount
+					j++
+				}
+			}
+
+			console.log(province)
+			console.log(confirmedCountOfProvince)
+			//return province
+		}
+
+		function get_thisProvince_cities(data){
+			for (i = 0; i < (data.results[0].cities).length; i++) {
+				city[i] = data.results[0].cities[i].cityName
+			}
+			console.log(city)
+		}
+
+
+
+		Highcharts.setOptions({
+			lang: {
+				drillUpText: '< 返回 “{series.name}”'
+			}
+		});
+
+		var map = null,
+			geochina = 'https://data.jianshukeji.com/jsonp?filename=geochina/';
+		$.getJSON(geochina + 'china.json&callback=?', function (mapdata) {
+			var data = [];
+			//生成全中国的数据
+			Highcharts.each(mapdata.features, function (md, index) {
+				for(i=0;i<province.length;i++){
+					if(province[i]==md.properties.name){
+						confirmedCount = confirmedCountOfProvince[i]
+					}
+				}
+				var tmp = {
+					name: md.properties.name,
+					value: confirmedCount // 生成 1 ~ 100 随机值
+					
+				};
+				if (md.properties.drilldown) {
+					tmp.drilldown = md.properties.drilldown;
+				}
+				data.push(tmp);
+			});
+			console.log(data)
+
+			map = new Highcharts.Map('container', {
+				chart: {
+					zoomType: 'None',
+					events: {
+						drilldown: function (e) {
+							this.tooltip.hide();
+							
+							console.log(e+"开始下钻");
+							// 异步下钻
+							if (e.point.drilldown) {
+								var pointName = e.point.properties.fullname;
+								console.log(pointName)
+								
+								$.ajax({
+									type: "GET", //GET还是POST,不是必须
+									url: "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province="+pointName,
+									success: function (data) {
+										get_thisProvince_cities(data)
+									}
+								});
+
+
+								map.showLoading('正在查询数据...');
+								// 获取二级行政地区数据并更新图表
+								$.getJSON(geochina + e.point.drilldown + '.json&callback=?', function (data) {
+									data = Highcharts.geojson(data);
+									Highcharts.each(data, function (d) {
+										if (d.properties.drilldown) {
+											d.drilldown = d.properties.drilldown;
+										}
+										d.value = Math.floor((Math.random() * 100) + 1); // 生成 1 ~ 100 随机值
+										d.drilldown = ""
+									});
+									map.hideLoading();
+									map.addSeriesAsDrilldown(e.point, {
+										name: e.point.name,
+										data: data,
+										dataLabels: {
+											enabled: true,
+											format: '{point.name}'
+										}
+									});
+									map.setTitle({
+										text: pointName
+									});
+									console.log(data)
+								});
+							}
+						},
+						drillup: function () {
+							map.setTitle({
+								text: '中国'
+							});
+						}
+					}
+				},
+				title: {
+					text: '中国新型冠状病毒最新分布图'
+				},
+				subtitle: {
+					useHTML: true,
+					text: '更新时间'
+				},
+				credits:{
+					enabled: false // 禁用版权信息
+				},
+				mapNavigation: {
+					enabled: true,
+					buttonOptions: {
+						verticalAlign: 'bottom'
+					}
+				},
+				// tooltip: {
+				// 	useHTML: true,
+				// 	headerFormat: '<table><tr><td>{point.name}</td></tr>',
+				// 	pointFormat: '<tr><td></td><td>{point.properties.fullname}</td></tr>' +
+				// 		'<tr><td>确诊人数</td><td>'++'</td></tr>' +
+				// 		'<tr><td>父级</td><td>{point.properties.parent}</td></tr>' +
+				// 		'<tr><td>经纬度</td><td>{point.properties.longitude},{point.properties.latitude}</td></tr>',
+				// 	footerFormat: '</table>'
+				// },
+				tooltip: {
+					backgroundColor: {
+						linearGradient: [0, 0, 0, 60],
+						stops: [
+							[0, '#FFFFFF'],
+							[1, '#E0E0E0']
+						]
+					},
+					borderWidth: 1,
+					borderColor: '#AAA',
+					footerFormat: '点击查看详情<br>点击右上角返回上一级',
+					style: {
+						padding: 10,
+						"fontSize": "20px",
+						fontWeight: 'bold'
+					},
+					borderRadius: 20
+				},
+				visualMap: {
+					min: 0,
+					max: 1000,
+					left: 26,
+					bottom: 40,
+					showLabel: !0,
+					text: ["高", "低"],
+					pieces: [{
+						gt: 100,
+						label: "> 100 人",
+						color: "#7f1100"
+					}, {
+						gte: 10,
+						lte: 100,
+						label: "10 - 100 人",
+						color: "#ff5428"
+					}, {
+						gte: 1,
+						lt: 10,
+						label: "1 - 9 人",
+						color: "#ff8c71"
+					}, {
+						gt: 0,
+						lt: 1,
+						label: "疑似",
+						color: "#ffd768"
+					}, {
+						value: 0,
+						color: "#ffffff"
+					}],
+					show: !0
+				},
+				colorAxis: {
+					min: 0,
+					minColor: '#87CEFA',
+					maxColor: '#006cee',
+					labels: {
+						style: {
+							"color": "blue", "fontWeight": "bold"
+						}
+					}
+				},
+				series: [{
+					data: data,
+					mapData: mapdata,
+					joinBy: 'name',
+					name: '中国',
+					states: {
+						hover: {
+							color: '#a4edba'
+						}
+					}
+				}]
+			});
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+#head{
+    font-size: 50px;
+    color: white;
+}
+
+.page-header{
+    height: 200px;
+
+}
+.page-header h1{
+    color: white;
+}
+.container-fiuled{
+    width: 1800px;
+    height: 920px; 
+    /* overflow: hidden; */
+    margin: 0 auto;
+}
+
+.bottomline{
+    border-bottom: white 2px solid;
+}
+
+.col-md-3 {
+    max-height: 200px;
+}
+
+#backhome{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: rgb(109, 109, 109);
+    transition: 0.4s;
+    cursor: pointer;
+    z-index: 100;
+    border-radius: 100px;
+    background: rgba(0, 0, 0, 0.571);
+    padding: 5px 10px;
+    font-size: 15px;
+}
+#backhome:hover{
+    color: rgb(255, 255, 255);
+}
+
+#paneldata3,#paneldata2,#paneldata1{
+    transition: 0.5s;
+}

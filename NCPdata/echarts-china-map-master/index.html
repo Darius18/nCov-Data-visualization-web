@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+  <title>ECharts China Map</title>
+  <style>
+    #china-map {
+      width: 1000px;
+      height: 800px;
+      margin: auto;
+      border: 2px solid powderblue
+    }
+  </style>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <script type="text/javascript" src="./js/echarts.min.js"></script>
+  <script type="text/javascript" src="./js/map/china.js"></script>
+</head>
+
+<body>
+  <button id="back">返回全国</button>
+  <div id="china-map"></div>
+
+  <script>
+    var chartMap = echarts.init(document.getElementById('china-map'));
+    var oBack = document.getElementById("back");
+
+    var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan', 'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang', 'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing', 'xianggang', 'aomen'];
+
+    var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门'];
+
+    //全国的数据
+    var data_OverAll_confirmed=[]
+    var provinceFromAjax = new Array()//从ajax获得的省份列表，不变，作为全局变量
+    var city = new Array()
+
+    var confirmedCountOfProvince = new Array();//每个省的发病数量
+    var confirmedCountOfCity = [];//每个市的发病数量
+
+
+    		//获得全国省份和对应的数量
+		function get_allChina_provinces(data) {
+			for (i = 0, j = 0; i < (data.results).length; i++) {
+				if (data.results[i].country == "中国") {
+					provinceFromAjax[j] = data.results[i].provinceShortName
+					confirmedCountOfProvince[j]= data.results[i].confirmedCount
+					j++
+				}
+			}
+			console.log(provinceFromAjax)
+			console.log(confirmedCountOfProvince)
+			//return province
+		}
+
+    function get_thisProvince_city(data){
+      for (i = 0; i < (data.results[0].cities).length; i++) {
+        var tmp = {
+                      //name: data.results[0].cities[i].cityName,
+                      //value: confirmedCountOfProvince[i]
+                    };
+			}
+			console.log(city)
+    }
+
+
+
+    $.ajax({
+        type: "GET", //GET还是POST,不是必须
+        url: "data/dataAreaNew.json",
+        success: function(data) {
+            get_allChina_provinces(data)
+            for(i=0;i<provinceFromAjax.length-1;i++){
+              var tmp = {
+                name: provinceFromAjax[i],
+                value: confirmedCountOfProvince[i]
+              };
+              data_OverAll_confirmed.push(tmp);
+            }
+            console.log(data_OverAll_confirmed)
+
+            oBack.onclick = function () {
+      initEcharts("china", "中国");
+    };
+
+    initEcharts("china", "中国");
+
+        }
+    });
+
+
+
+
+    // 初始化echarts
+    function initEcharts(pName, Chinese_) {
+      var tmpdata_OverAll_confirmed = pName === "china" ? data_OverAll_confirmed : [];
+console.log("hello!!!")
+console.log(data_OverAll_confirmed)
+      var option = {
+        tooltip:{//信息提示框
+              show:true,
+              type :'shadow',
+              formatter: '{a} {b0}<br>确诊人数： {c0}<br/>'
+            },
+        title: {
+          text: (Chinese_ || pName )+"确诊患者数据分布",
+          left: 'center'
+        },
+        series:{
+            name: Chinese_ || pName,
+            type: 'map',
+            mapType: pName,
+            roam: false,//是否开启鼠标缩放和平移漫游
+            itemStyle: {//地图区域的多边形 图形样式
+              normal: {//是图形在默认状态下的样式
+                label: {
+                  show: true,//是否显示标签
+                  textStyle: {
+                    color: "pink",
+                    fontSize: "20",
+                  }
+                }
+              },
+              emphasis: {//是图形在高亮状态下的样式,比如在鼠标悬浮或者图例联动高亮时
+                label: { show: true }
+              },
+              normal: {
+                    //shadowBlur: 50,
+                    //shadowColor: 'rgba(0, 0, 0, 0.2)',
+                    borderColor: "blue"
+                },
+                emphasis: {
+                    areaColor: "yellow",
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                    borderWidth: 3
+                }
+            },
+            data: tmpdata_OverAll_confirmed,
+            top: "3%",//组件距离容器的距离
+          },
+          visualMap: {
+            min: 0,
+            max: 10000,
+            left: 26,
+            bottom: 10,
+            showLabel: !0,
+            text: ["高", "低"],
+            pieces: [
+                {
+                    gt: 1000,
+                    label: "> 1000 人",
+                    color: "#7f1100"
+                },
+                {
+                    gte: 500,
+                    lte: 999,
+                    label: "500 - 999 人",
+                    color: "#ff5428"
+                },
+                {
+                    gte: 100,
+                    lt: 499,
+                    label: "100 - 499 人",
+                    color: "#ff8c71"
+                },
+                {
+                    gt: 10,
+                    lt: 99,
+                    label: "10 - 99 人",
+                    color: "#ffd768"
+                },
+                {
+                    gt: 0,
+                    lt: 9,
+                    label: "0 - 9 人",
+                    color: "#ffffff"
+                }
+            ],
+            show: !0
+        },
+
+      };
+
+      chartMap.setOption(option);
+
+      chartMap.off("click");
+
+      if (pName === "china") { // 全国时，添加click 进入省级
+        chartMap.on('click', function (param) {
+          console.log("现在你点击的是"+param.name);
+          //ajax获取该省份的数据
+          $.ajax({
+              type: "GET", //GET还是POST,不是必须
+              url: "data/dataHenanAllTime.json",
+              success: function(data) {
+                  get_thisProvince_city(data)
+                  get_allChina_provinces(data)
+                  for(i=0;i<provinceFromAjax.length-1;i++){
+                    var tmp = {
+                      name: provinceFromAjax[i],
+                      value: confirmedCountOfProvince[i]
+                    };
+                    data_OverAll_confirmed.push(tmp);
+                  }
+                  console.log(data_OverAll_confirmed)
+
+                  oBack.onclick = function () {
+                    initEcharts("china", "中国");
+                  };
+
+                  initEcharts("china", "中国");
+
+              }
+          });
+          //遍历取到provincesText 中的下标  去拿到对应的省js
+          for (var i = 0; i < provincesText.length; i++) {
+            if (param.name === provincesText[i]) {
+              //显示对应省份的方法
+              showProvince(provinces[i], provincesText[i]);
+              break;
+            }
+          }
+        });
+      } else { // 省份，添加双击 回退到全国
+        chartMap.on("dblclick", function () {
+          initEcharts("china", "中国");
+        });
+      }
+    }
+
+    // 展示对应的省
+    function showProvince(pName, Chinese_) {
+      //这写省份的js都是通过在线构建工具生成的，保存在本地，需要时加载使用即可，最好不要一开始全部直接引入。 
+      loadBdScript('$' + pName + 'JS', './js/map/province/' + pName + '.js', function () {
+        initEcharts(Chinese_);
+      });
+    }
+
+    // 加载对应的JS
+    function loadBdScript(scriptId, url, callback) {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      if (script.readyState) {  //IE
+        script.onreadystatechange = function () {
+          if (script.readyState === "loaded" || script.readyState === "complete") {
+            script.onreadystatechange = null;
+            callback();
+          }
+        };
+      } else {  // Others  
+        script.onload = function () {
+          callback();
+        };
+      }
+      script.src = url;
+      script.id = scriptId;
+      document.getElementsByTagName("head")[0].appendChild(script);
+    };
+  </script>
+</body>
+
+</html>
