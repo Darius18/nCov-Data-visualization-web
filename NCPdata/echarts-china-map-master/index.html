@@ -12,6 +12,18 @@
       margin: auto;
       border: 2px solid powderblue
     }
+
+    #ranklist {
+      width: 500px;
+      height: 1000px;
+      border: 2px yellowgreen solid;
+    }
+
+    #timePie {
+      width: 1000px;
+      height: 500px;
+      border: 2px rgb(50, 143, 205) solid;
+    }
   </style>
   <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
   <script type="text/javascript" src="./js/echarts.min.js"></script>
@@ -21,9 +33,12 @@
 <body>
   <button id="back">返回全国</button>
   <div id="china-map"></div>
+  <div id="ranklist"></div>
+  <div id="timePie"></div>
 
   <script>
     var chartMap = echarts.init(document.getElementById('china-map'));
+    var timePie = echarts.init(document.getElementById('timePie'));
     var oBack = document.getElementById("back");
 
     var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan', 'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang', 'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing', 'xianggang', 'aomen'];
@@ -31,209 +46,296 @@
     var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门'];
 
     //全国的数据
-    var data_OverAll_confirmed=[]
+    var data_OverAll_confirmed = []
+    var data_city_confirmed = [];//每个市的发病数量
     var provinceFromAjax = new Array()//从ajax获得的省份列表，不变，作为全局变量
     var city = new Array()
 
     var confirmedCountOfProvince = new Array();//每个省的发病数量
-    var confirmedCountOfCity = [];//每个市的发病数量
+    var curedCountOfProvince = new Array();//每个省的治愈数量
+    var deadCoundOfProvince = new Array();//每个省的死亡数量
+
+    var confirmedCountOfCity = new Array();
+    var curedCountofCity = new Array();
+    var deadCountOfCity = new Array();
+
+    var TimeConfirmedCountOfChina = new Array();
+    var TimeCuredCountOfChina = new Array();
+    var TimeDeadCountOfChina = new Array();
+    var TimeSusCountOfChina = new Array();//疑似人数的时间序列
+    var timeSequence = new Array();
 
 
-    		//获得全国省份和对应的数量
-		function get_allChina_provinces(data) {
-			for (i = 0, j = 0; i < (data.results).length; i++) {
-				if (data.results[i].country == "中国") {
-					provinceFromAjax[j] = data.results[i].provinceShortName
-					confirmedCountOfProvince[j]= data.results[i].confirmedCount
-					j++
-				}
-			}
-			console.log(provinceFromAjax)
-			console.log(confirmedCountOfProvince)
-			//return province
-		}
-
-    function get_thisProvince_city(data){
-      for (i = 0; i < (data.results[0].cities).length; i++) {
-        var tmp = {
-                      //name: data.results[0].cities[i].cityName,
-                      //value: confirmedCountOfProvince[i]
-                    };
-			}
-			console.log(city)
+    function day(x) {
+      a = parseInt(x)
+      date = new Date(a);
+      M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '月';
+      D = date.getDate() + '日';
+      return M + D
     }
 
 
-
-    $.ajax({
-        type: "GET", //GET还是POST,不是必须
-        url: "data/dataAreaNew.json",
-        success: function(data) {
-            get_allChina_provinces(data)
-            for(i=0;i<provinceFromAjax.length-1;i++){
-              var tmp = {
-                name: provinceFromAjax[i],
-                value: confirmedCountOfProvince[i]
-              };
-              data_OverAll_confirmed.push(tmp);
-            }
-            console.log(data_OverAll_confirmed)
-
-            oBack.onclick = function () {
-      initEcharts("china", "中国");
-    };
-
-    initEcharts("china", "中国");
-
+    //取得全国省份和对应的数量
+    function get_allChina_provinces(data) {
+      for (i = 0, j = 0; i < (data.results).length; i++) {
+        if (data.results[i].country == "中国") {
+          provinceFromAjax[j] = data.results[i].provinceShortName
+          confirmedCountOfProvince[j] = data.results[i].confirmedCount
+          curedCountOfProvince[j] = data.results[i].curedCount
+          deadCoundOfProvince[j] = data.results[i].deadCount
+          j++
         }
+      }
+      console.log(provinceFromAjax)
+      console.log(confirmedCountOfProvince)
+      //return province
+    }
+
+
+    //取得最新的市的数据
+    function get_thisProvince_city_NEW(data) {
+      for (i = 0; i < (data.results[0].cities).length; i++) {
+        var tmp = {
+          name: data.results[0].cities[i].cityName + "市",
+          value: data.results[0].cities[i].confirmedCount
+        };
+        city[i] = data.results[0].cities[i].cityName;
+        confirmedCountOfCity[i] = data.results[0].cities[i].confirmedCount
+        curedCountofCity[i] = data.results[0].cities[i].curedCount
+        deadCountOfCity[i] = data.results[0].cities[i].deadCount
+        data_city_confirmed.push(tmp)
+      }
+      console.log(data_city_confirmed)
+    }
+
+
+    //获取全国的信息
+    $.ajax({
+      type: "GET", //GET还是POST,不是必须
+      url: "data/dataAreaNew.json",
+      success: function (data) {
+        get_allChina_provinces(data)
+        for (i = 0; i < provinceFromAjax.length; i++) {
+          var tmp = {
+            name: provinceFromAjax[i],
+            value: confirmedCountOfProvince[i]
+          };
+          data_OverAll_confirmed.push(tmp);
+        }
+        console.log(data_OverAll_confirmed)
+
+        oBack.onclick = function () {
+          setRanklist(provinceFromAjax, confirmedCountOfProvince, curedCountOfProvince, deadCoundOfProvince)
+          initEcharts("china", "中国");
+        };
+
+        initEcharts("china", "中国");
+        setRanklist(provinceFromAjax, confirmedCountOfProvince, curedCountOfProvince, deadCoundOfProvince)
+      }
+    });
+
+
+    //获取全国的时间序列信息
+    $.ajax({
+      type: "GET", //GET还是POST,不是必须
+      url: "data/overall.json",
+      success: function (data) {
+        //首先更新一下最新的消息
+
+        //然后获取
+        for (i = 0, j = 0; i < (data.results).length; i++) {
+
+          if (timeSequence[j - 1] == day(data.results[i].updateTime)) {
+
+          } else {
+            timeSequence[j] = day(data.results[i].updateTime)
+            TimeConfirmedCountOfChina[j] = data.results[i].confirmedCount
+            TimeCuredCountOfChina[j] = data.results[i].curedCount
+            TimeDeadCountOfChina[j] = data.results[i].deadCount
+            TimeSusCountOfChina[j] = data.results[i].suspectedCount
+            j++
+
+          }
+        }
+
+        console.log("以下是全国的时间序列信息")
+        console.log(timeSequence)
+        console.log(TimeSusCountOfChina)
+        settimePie(timeSequence, TimeConfirmedCountOfChina, TimeCuredCountOfChina, TimeDeadCountOfChina, TimeSusCountOfChina)
+
+      }
     });
 
 
 
-
     // 初始化echarts
-    function initEcharts(pName, Chinese_) {
-      var tmpdata_OverAll_confirmed = pName === "china" ? data_OverAll_confirmed : [];
-console.log("hello!!!")
-console.log(data_OverAll_confirmed)
+    function initEcharts(pName, Chinese_, dataArray) {
+
+      var tmpdata_OverAll_confirmed = pName === "china" ? data_OverAll_confirmed : dataArray;
+      console.log("hello!!!已完成地图的初始化")
+      console.log(tmpdata_OverAll_confirmed)
       var option = {
-        tooltip:{//信息提示框
-              show:true,
-              type :'shadow',
-              formatter: '{a} {b0}<br>确诊人数： {c0}<br/>'
-            },
+        tooltip: {//信息提示框
+          show: true,
+          type: 'shadow',
+          formatter: '{a} {b0}<br>确诊人数： {c0}<br/>'
+        },
         title: {
-          text: (Chinese_ || pName )+"确诊患者数据分布",
+          text: (Chinese_ || pName) + "确诊患者数据分布",
           left: 'center'
         },
-        series:{
-            name: Chinese_ || pName,
-            type: 'map',
-            mapType: pName,
-            roam: false,//是否开启鼠标缩放和平移漫游
-            itemStyle: {//地图区域的多边形 图形样式
-              normal: {//是图形在默认状态下的样式
-                label: {
-                  show: true,//是否显示标签
-                  textStyle: {
-                    color: "pink",
-                    fontSize: "20",
-                  }
+        series: {
+          name: Chinese_ || pName,
+          type: 'map',
+          mapType: pName,
+          roam: false,//是否开启鼠标缩放和平移漫游
+          itemStyle: {//地图区域的多边形 图形样式
+            normal: {//是图形在默认状态下的样式
+              label: {
+                show: true,//是否显示标签
+                textStyle: {
+                  color: "pink",
+                  fontSize: "20",
                 }
-              },
-              emphasis: {//是图形在高亮状态下的样式,比如在鼠标悬浮或者图例联动高亮时
-                label: { show: true }
-              },
-              normal: {
-                    //shadowBlur: 50,
-                    //shadowColor: 'rgba(0, 0, 0, 0.2)',
-                    borderColor: "blue"
-                },
-                emphasis: {
-                    areaColor: "yellow",
-                    shadowOffsetX: 0,
-                    shadowOffsetY: 0,
-                    borderWidth: 3
-                }
+              }
             },
-            data: tmpdata_OverAll_confirmed,
-            top: "3%",//组件距离容器的距离
+            emphasis: {//是图形在高亮状态下的样式,比如在鼠标悬浮或者图例联动高亮时
+              label: { show: true }
+            },
+            normal: {
+              //shadowBlur: 50,
+              //shadowColor: 'rgba(0, 0, 0, 0.2)',
+              borderColor: "blue"
+            },
+            emphasis: {
+              areaColor: "yellow",
+              shadowOffsetX: 0,
+              shadowOffsetY: 0,
+              borderWidth: 3
+            }
           },
-          visualMap: {
-            min: 0,
-            max: 10000,
-            left: 26,
-            bottom: 10,
-            showLabel: !0,
-            text: ["高", "低"],
-            pieces: [
-                {
-                    gt: 1000,
-                    label: "> 1000 人",
-                    color: "#7f1100"
-                },
-                {
-                    gte: 500,
-                    lte: 999,
-                    label: "500 - 999 人",
-                    color: "#ff5428"
-                },
-                {
-                    gte: 100,
-                    lt: 499,
-                    label: "100 - 499 人",
-                    color: "#ff8c71"
-                },
-                {
-                    gt: 10,
-                    lt: 99,
-                    label: "10 - 99 人",
-                    color: "#ffd768"
-                },
-                {
-                    gt: 0,
-                    lt: 9,
-                    label: "0 - 9 人",
-                    color: "#ffffff"
-                }
-            ],
-            show: !0
+          data: tmpdata_OverAll_confirmed,
+          top: "3%",//组件距离容器的距离
         },
-
+        visualMap: {
+          min: 0,
+          max: 10000,
+          left: 26,
+          bottom: 10,
+          showLabel: !0,
+          text: ["高", "低"],
+          pieces: [
+            {
+              gt: 1000,
+              label: "> 1000 人",
+              color: "#7f1100"
+            },
+            {
+              gte: 500,
+              lte: 999,
+              label: "500 - 999 人",
+              color: "#ff5428"
+            },
+            {
+              gte: 100,
+              lt: 499,
+              label: "100 - 499 人",
+              color: "#ff8c71"
+            },
+            {
+              gt: 10,
+              lt: 99,
+              label: "10 - 99 人",
+              color: "#ffd768"
+            },
+            {
+              gt: 0,
+              lt: 9,
+              label: "0 - 9 人",
+              color: "#ffffff"
+            }
+          ],
+          show: !0
+        },
+        loadingText: '正在加载',
       };
-
       chartMap.setOption(option);
 
       chartMap.off("click");
 
       if (pName === "china") { // 全国时，添加click 进入省级
         chartMap.on('click', function (param) {
-          console.log("现在你点击的是"+param.name);
+          console.log("现在你点击的是" + param.name);
+
+          chartMap.showLoading(
+            {
+              text: '正在查询该地区的疫情信息',
+              color: '#00fdff',
+              textColor: '#000',
+              maskColor: 'rgba(0, 0, 0, 0.8)',
+              zlevel: 0
+            }
+          );
+          var url
+          if (param.name == "西藏" || param.name == "内蒙古") {
+            url = "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=" + param.name + "自治区"
+            if (param.name == "西藏") {
+              alert("西藏部分地区地理信息缺失\n您仍然可以从其他图表中了解疫情发展情况\n\n您可以访问http://www.xinjiang.gov.cn/新疆维吾尔自治区人民政府来获取最新消息\n若有不适，请尽快联系社区医院。\n\n祝你平安。")
+            }
+          } else if (param.name == "北京" || param.name == "天津" || param.name == "重庆" || param.name == "上海") {//四个直辖市
+            url = "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=" + param.name + "市"
+          } else if (param.name == "广西") {
+            url = "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=广西壮族自治区"
+          } else if (param.name == "新疆") {
+            url = "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=新疆维吾尔自治区"
+            alert("新疆部分地区地理信息缺失\n您仍然可以从其他图表中了解疫情发展情况\n\n您可以访问http://www.xinjiang.gov.cn/新疆维吾尔自治区人民政府来获取最新消息\n若有不适，请尽快联系社区医院。\n\n祝你平安。")
+
+          } else if (param.name == "宁夏") {
+            url = "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=宁夏回族自治区"
+          } else if (param.name == "台湾" || param.name == "澳门" || param.name == "香港") {
+            url = "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=" + param.name
+          } else {
+            url = "https://lab.isaaclin.cn/nCoV/api/area?latest=0&province=" + param.name + "省"
+          }
           //ajax获取该省份的数据
           $.ajax({
-              type: "GET", //GET还是POST,不是必须
-              url: "data/dataHenanAllTime.json",
-              success: function(data) {
-                  get_thisProvince_city(data)
-                  get_allChina_provinces(data)
-                  for(i=0;i<provinceFromAjax.length-1;i++){
-                    var tmp = {
-                      name: provinceFromAjax[i],
-                      value: confirmedCountOfProvince[i]
-                    };
-                    data_OverAll_confirmed.push(tmp);
-                  }
-                  console.log(data_OverAll_confirmed)
+            type: "GET",
+            url: "data/dataHenanAllTime.json",
+            //url,
+            success: function (data) {
+              console.log(data.results[0])
+              chartMap.hideLoading();
+              data_city_confirmed = []
+              get_thisProvince_city_NEW(data)
+              //遍历取到provincesText 中的下标  去拿到对应的省js
+              for (var i = 0; i < provincesText.length; i++) {
+                if (param.name === provincesText[i]) {
+                  //显示对应省份的方法
+                  setRanklist(city, confirmedCountOfCity, curedCountofCity, deadCountOfCity)
+                  showProvince(provinces[i], provincesText[i], data_city_confirmed);
 
-                  oBack.onclick = function () {
-                    initEcharts("china", "中国");
-                  };
-
-                  initEcharts("china", "中国");
-
+                  break;
+                }
               }
-          });
-          //遍历取到provincesText 中的下标  去拿到对应的省js
-          for (var i = 0; i < provincesText.length; i++) {
-            if (param.name === provincesText[i]) {
-              //显示对应省份的方法
-              showProvince(provinces[i], provincesText[i]);
-              break;
             }
-          }
+          });
+
         });
       } else { // 省份，添加双击 回退到全国
         chartMap.on("dblclick", function () {
+          setRanklist(provinceFromAjax, confirmedCountOfProvince, curedCountOfProvince, deadCoundOfProvince)
           initEcharts("china", "中国");
         });
       }
     }
 
     // 展示对应的省
-    function showProvince(pName, Chinese_) {
+    function showProvince(pName, Chinese_, dataArray) {
+      console.log("shwo province")
+      console.log(dataArray)
       //这写省份的js都是通过在线构建工具生成的，保存在本地，需要时加载使用即可，最好不要一开始全部直接引入。 
       loadBdScript('$' + pName + 'JS', './js/map/province/' + pName + '.js', function () {
-        initEcharts(Chinese_);
+        initEcharts(Chinese_, Chinese_, dataArray);
       });
     }
 
@@ -257,6 +359,172 @@ console.log(data_OverAll_confirmed)
       script.id = scriptId;
       document.getElementsByTagName("head")[0].appendChild(script);
     };
+
+
+
+    ///////////////////////////////////////////////////////////以下是其他图表
+
+    function setRanklist(provincesList, confirmList, cureList, deadList) {
+      var ranklist = echarts.init(document.getElementById('ranklist'));
+
+      ranklistOption = {
+        title: {
+          text: '世界人口总量',
+          subtext: '数据来自网络'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        legend: {
+          data: ['确诊数', '治愈数', '死亡数']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value',
+          boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+          type: 'category',
+          data: provincesList
+        },
+        series: [
+          {
+            name: '确诊数',
+            type: 'bar',
+            data: confirmList
+          },
+          {
+            name: '治愈数',
+            type: 'line',
+            data: cureList
+          },
+          {
+            name: '死亡数',
+            type: 'bar',
+            data: deadList
+          }
+        ]
+      };
+      ranklist.setOption(ranklistOption)
+    }
+
+    function settimePie(time, confirmList, cureList, deadList, susList) {
+      var options = new Array
+      function initThisPie(callback) {
+        console.log(time.length)
+        for (i = 0; i < time.length; i++) {
+          var tmp = {
+            title: { text: time[i] + '疫情分布情况' },
+            series: {
+              data: [
+                { name: '确诊率', value: confirmList[i] },
+                { name: '治愈率', value: cureList[i] },
+                { name: '死亡率', value: deadList[i] },
+                { name: '疑似率', value: susList[i] }]
+            }
+          }
+          options.push(tmp)
+        }
+        callback()
+      }
+
+      initThisPie(function () {
+        console.log(options)
+        console.log("产生了回调")
+        timePie.setOption(
+          {
+
+            baseOption: {
+              backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                offset: 0,
+                color: '#f7f8fa'
+              }, {
+                offset: 1,
+                color: '#cdd0d5'
+              }]),
+              timeline: {
+                data: time,
+                axisType: 'category',
+                autoPlay: true,
+                rewind: true,
+                playInterval: 500,
+                controlPosition: 'right',
+                tooltip: {
+                  trigger: 'item',
+                  formatter: '显示{b}的疫情数据'
+                },
+              },
+              legend: {
+                show: true
+              },
+              title: {
+                subtext: '数据来自国家统计局'
+              },
+              grid: {},
+              tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+              },
+
+              series: [
+                {
+                  selectedMode: 'single',
+                  selectedOffset: 30,
+                  clockwise: true,
+                  name: '新型冠状病毒',
+                  type: 'pie',
+                  radius: '55%',
+                  center: ['50%', '50%'],
+                  // roseType: 'area',
+
+                  label: {
+                    color: 'red',
+                    position: 'outer',
+                    alignTo: 'none',
+                    bleedMargin: 5
+                  },
+                  labelLine: {
+                    lineStyle: {
+                      color: 'red'
+                    },
+                    smooth: 0.2,
+                    length: 10,
+                    length2: 20
+                  },
+                  itemStyle: {
+                    color: '#c23531',
+                    shadowBlur: 200,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  },
+
+                  animationType: 'scale',
+                  animationEasing: 'elasticOut',
+                  animationDelay: function (idx) {
+                    return Math.random() * 200;
+                  }
+                }
+              ]
+            },
+            options: options
+          }
+        );
+
+      })
+
+
+
+
+
+    }
+
   </script>
 </body>
 
