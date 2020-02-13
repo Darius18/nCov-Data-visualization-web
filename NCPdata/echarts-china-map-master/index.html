@@ -6,41 +6,173 @@
   <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
   <title>ECharts China Map</title>
   <style>
+    #back {
+      position: absolute;
+      z-index: 1;
+    }
+
     #china-map {
-      width: 1000px;
-      height: 800px;
+      width: 780px;
+      height: 465px;
+      margin: auto;
+      border: 2px solid powderblue;
+      display: none;
+    }
+
+    #ChinaMapAnimate {
+      width: 100%;
+      height: 465px;
       margin: auto;
       border: 2px solid powderblue
     }
 
     #ranklist {
-      width: 500px;
-      height: 1000px;
+      width: 100%;
+      height: 825px;
       border: 2px yellowgreen solid;
     }
 
     #timePie {
-      width: 1000px;
-      height: 500px;
+      width: 100%;
+      height: 270px;
       border: 2px rgb(50, 143, 205) solid;
     }
+
+    #timeLine {
+      width: 100%;
+      height: 250px;
+      border: 2px rgb(50, 205, 115) solid;
+    }
+
+    #timeCalendar {
+      width: 100%;
+      height: 305px;
+      border: 2px rgb(119, 0, 167) solid;
+    }
+
+    #incri {
+      width: 100%;
+      height: 360px;
+      border: 2px rgb(119, 0, 167) solid;
+    }
+
+    #change{
+      position: absolute;
+      right: 20px;
+      z-index: 2;
+    }
+
+    #change1{
+      padding: 10px  10px  10px 20px;
+      background-color: rgb(0, 161, 224);
+      color: white;
+      float: left;
+      border-radius: 100px 0  0 100px;
+      cursor: pointer;
+    }
+    #change2{
+      padding:10px 20px 10px 10px;
+      background-color: rgb(116, 116, 116);
+      color: white;
+      float: left;
+      border-radius: 0 100px 100px 0;
+      cursor: pointer;
+
+    }
   </style>
-  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
   <script type="text/javascript" src="./js/echarts.min.js"></script>
   <script type="text/javascript" src="./js/map/china.js"></script>
 </head>
 
 <body>
-  <button id="back">返回全国</button>
-  <div id="china-map"></div>
-  <div id="ranklist"></div>
-  <div id="timePie"></div>
+
+
+  <div class="container-fluid">
+    <div class="row clearfix" style="margin-bottom: 20px;margin-top: 10px;">
+      <div class="col-md-12 column text-center">
+        <h4>2020年nCov实时数据追踪 </h4>
+        <p id="updateTime">最近更新时间：</p>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-5 column">
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+            <!-- 地图 -->
+            <button id="back">返回全国</button>
+            <div id="change">
+              <div id="change1" class="text-center">时空演变</div>
+              <div id="change2" class="text-center">地图下钻</div>
+
+            </div>
+            <div id="china-map"></div>
+            <div id="ChinaMapAnimate"></div>
+          </div>
+        </div>
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+            <!-- 增长 -->
+            <div id="incri"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 column">
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+            <!-- 排行 -->
+            <div id="ranklist"></div>
+          </div>
+        </div>
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 column">
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+            <div class="row clearfix">
+              <div class="col-md-12 column">
+                <!-- 圆饼 -->
+                <div id="timePie"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+            <!-- 时间线 -->
+            <div id="timeLine"></div>
+          </div>
+        </div>
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+            <!-- 日历 -->
+            <div id="timeCalendar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
 
   <script>
+    //初始化图表
     var chartMap = echarts.init(document.getElementById('china-map'));
+    var chartMapAnimate = echarts.init(document.getElementById('ChinaMapAnimate'));
     var timePie = echarts.init(document.getElementById('timePie'));
+    var timeLineChart = echarts.init(document.getElementById('timeLine'))
+    var timeCalendar = echarts.init(document.getElementById('timeCalendar'))
+    var incri = echarts.init(document.getElementById('incri'))
     var oBack = document.getElementById("back");
-
+    //初始化数据
     var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan', 'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang', 'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing', 'xianggang', 'aomen'];
 
     var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门'];
@@ -63,8 +195,16 @@
     var TimeCuredCountOfChina = new Array();
     var TimeDeadCountOfChina = new Array();
     var TimeSusCountOfChina = new Array();//疑似人数的时间序列
-    var timeSequence = new Array();
+    var timeSequence = new Array();//这两个时间序列都是全国的
+    var timeSequenceForCalendar = new Array()//给日历用的时间序列，格式为Y-M-D
 
+    //全国的增加量
+    var suspectedIncr = new Array()
+    var confirmedIncr = new Array()
+    var curedIncr = new Array()
+    var deadIncr = new Array()
+
+    updateTimeHTML=""
 
     function day(x) {
       a = parseInt(x)
@@ -72,6 +212,24 @@
       M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '月';
       D = date.getDate() + '日';
       return M + D
+    }
+    function dayForCalendar(x) {
+      a = parseInt(x)
+      date = new Date(a);
+      Y = date.getFullYear() + '-';
+      M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+      D = date.getDate();
+      return Y + M + D
+    }
+    function getALLday(x){
+      var date = new Date(x);
+Y = date.getFullYear() + '-';
+M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+D = date.getDate() + ' ';
+h = date.getHours() + ':';
+m = date.getMinutes() + ':';
+s = date.getSeconds(); 
+return (Y+M+D+h+m+s)
     }
 
 
@@ -115,6 +273,13 @@
       url: "data/dataAreaNew.json",
       success: function (data) {
         get_allChina_provinces(data)
+        for(i=0;i<data.results.length;i++){
+          if(data.results[i].provinceShortName=='湖北'){
+            updateTimeHTML = getALLday(data.results[i].updateTime)
+            document.getElementById("updateTime").innerHTML="数据更新时间："+updateTimeHTML
+          }
+
+        }
         for (i = 0; i < provinceFromAjax.length; i++) {
           var tmp = {
             name: provinceFromAjax[i],
@@ -135,6 +300,7 @@
     });
 
 
+
     //获取全国的时间序列信息
     $.ajax({
       type: "GET", //GET还是POST,不是必须
@@ -148,11 +314,17 @@
           if (timeSequence[j - 1] == day(data.results[i].updateTime)) {
 
           } else {
+            timeSequenceForCalendar[j] = dayForCalendar(data.results[i].updateTime)
             timeSequence[j] = day(data.results[i].updateTime)
             TimeConfirmedCountOfChina[j] = data.results[i].confirmedCount
             TimeCuredCountOfChina[j] = data.results[i].curedCount
             TimeDeadCountOfChina[j] = data.results[i].deadCount
             TimeSusCountOfChina[j] = data.results[i].suspectedCount
+
+            suspectedIncr[j] = data.results[i].suspectedIncr
+            deadIncr[j] = data.results[i].deadIncr
+            curedIncr[j] = data.results[i].curedIncr
+            confirmedIncr[j] = data.results[i].confirmedIncr
             j++
 
           }
@@ -162,6 +334,10 @@
         console.log(timeSequence)
         console.log(TimeSusCountOfChina)
         settimePie(timeSequence, TimeConfirmedCountOfChina, TimeCuredCountOfChina, TimeDeadCountOfChina, TimeSusCountOfChina)
+        settimeLine(timeSequence, TimeConfirmedCountOfChina, TimeCuredCountOfChina, TimeDeadCountOfChina, TimeSusCountOfChina)
+        settimeCalendar(timeSequenceForCalendar, TimeConfirmedCountOfChina, TimeCuredCountOfChina, TimeDeadCountOfChina, TimeSusCountOfChina)
+
+        setIncri(timeSequence.slice(10), confirmedIncr, curedIncr, deadIncr, suspectedIncr)
 
       }
     });
@@ -411,7 +587,11 @@
             type: 'bar',
             data: deadList
           }
-        ]
+        ],
+        animationEasing: 'elasticOut',
+        animationDelayUpdate: function (idx) {
+          return idx * 100;
+        }
       };
       ranklist.setOption(ranklistOption)
     }
@@ -519,11 +699,644 @@
 
       })
 
+    }
+
+
+    function settimeLine(time, confirmList, cureList, deadList, susList) {
+
+      time = time.reverse()
+      confirmList = confirmList.reverse()
+      deadList = deadList.reverse()
+      susList = susList.reverse()
+      cureList = cureList.reverse()
+      timeLineChart.setOption(
+        {
+          title: {
+            text: '疫情增长情况'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['确诊数', '治愈数', '死亡数', '疑似数']
+          },
+          dataZoom: [
+            {
+              type: 'slider',
+              show: true,
+              xAxisIndex: [0],
+              start: 20,
+              end: 100
+            },
+            {
+              type: 'slider',
+              show: true,
+              yAxisIndex: [0],
+              left: '93%',
+              start: 0,
+              end: 60
+            },
+            {
+              type: 'inside',
+              xAxisIndex: [0],
+              start: 20,
+              end: 100
+            },
+            {
+              type: 'inside',
+              yAxisIndex: [0],
+              start: 0,
+              end: 60
+            }
+          ],
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: time
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              name: '确诊数',
+              type: 'line',
+              data: confirmList
+            },
+            {
+              name: '治愈数',
+              type: 'line',
+              data: cureList
+            },
+            {
+              name: '死亡数',
+              type: 'line',
+              data: deadList
+            },
+            {
+              name: '疑似数',
+              type: 'line',
+              stack: '总量',
+              data: susList
+            },
+          ]
+        }
+
+      );
+
+
+    }
+    function settimeCalendar(time, confirmList, cureList, deadList, susList) {
+
+      var thisdataConfirmed = new Array()
+      var thisdataSus = new Array()
+      var thisdatacure = new Array()
+      var thisdatadead = new Array()
+      var thisdataCureRatio = new Array()
+
+      function initCalendar(callback) {
+
+        calendarRange = [time[0], time[time.length - 1]]
+        for (i = 0; i < time.length; i++) {
+          thisdataConfirmed[i] = [time[i], confirmList[time.length - i - 1]]
+          thisdatacure[i] = [time[i], cureList[time.length - i - 1]]
+          thisdataSus[i] = [time[i], susList[time.length - i - 1]]
+          thisdatadead[i] = [time[i], deadList[time.length - i - 1]]
+          thisdataCureRatio[i] = [time[i], (deadList[time.length - i - 1] / cureList[time.length - i - 1])]
+        }
+
+        callback()
+      }
+
+      initCalendar(function () {
+        console.log(thisdatadead)
+        console.log(thisdatacure)
+        console.log(thisdataCureRatio)
+        thisdataCureRatio.reverse()
+        timeCalendar.setOption(
+          {
+            title: [{
+              top: 30,
+              left: 150,
+              text: '2020年疫情确诊数月份热力图',
+              seriesIndex: 1,
+
+            }, {
+              top: 30,
+              left: 650,
+              text: '死亡数-治愈数之比率',
+              seriesIndex: 1,
+            }],
+            tooltip: {},
+            visualMap: [
+              {
+                min: 0,
+                max: 50000,
+                calculable: true,
+                seriesIndex: 0,
+                orient: 'horizontal',
+                left: '55%',
+                bottom: 20
+              },
+              {
+                min: 0,
+                max: 1.5,
+                calculable: true,
+                seriesIndex: 1,
+                orient: 'horizontal',
+                left: '55%',
+                bottom: 50,
+                inRange: {
+                  color: ['#92FFC0', '#002661']
+                }
+              },
+            ],
+            calendar: [{
+              title: "fabi",
+              orient: 'vertical',
+              top: 120,
+              left: 70,
+              right: 300,
+              cellSize: '20',
+              range: calendarRange,
+              itemStyle: {
+                borderWidth: 0.5
+              },
+              yearLabel: {
+                margin: 40
+              },
+              dayLabel: {
+                firstDay: 1,
+                nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+              },
+              monthLabel: {
+                nameMap: 'cn',
+                margin: 20
+              },
+            }, {
+              orient: 'vertical',
+              top: 120,
+              left: 370,
+              right: 20,
+              cellSize: '20',
+              range: calendarRange,
+              itemStyle: {
+                borderWidth: 0.5
+              },
+              yearLabel: {
+                margin: 40
+              },
+              dayLabel: {
+                firstDay: 1,
+                nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+              },
+              monthLabel: {
+                nameMap: 'cn',
+                margin: 20
+              },
+            }
+            ],
+            series: [{
+
+              name: '确诊数',
+              type: 'heatmap',
+              calendarIndex: 0,
+              coordinateSystem: 'calendar',
+              data: thisdataConfirmed
+            }
+              , {
+              name: '死亡数与治愈数之比',
+              type: 'heatmap',
+              calendarIndex: 1,
+              coordinateSystem: 'calendar',
+              data: thisdataCureRatio
+            },
+              // {
+              //   name: '治愈数',
+              //   type: 'heatmap',
+              //   coordinateSystem: 'calendar',
+              //   data: thisdatacure
+              // }, {
+              //   name: '死亡数',
+              //   type: 'heatmap',
+              //   coordinateSystem: 'calendar',
+              //   data: thisdatadead
+              // }
+            ]
+          }
+
+        );
+      })
+
 
 
 
 
     }
+
+    function setIncri(time, confirmList, cureList, deadList, susList) {
+
+      incri.setOption(
+        {
+          title: {
+            text: '全国疫情增长情况'
+          },
+          toolbox: {
+            // y: 'bottom',
+            feature: {
+              magicType: {
+                type: ['stack', 'tiled']
+              },
+              dataView: {},
+              saveAsImage: {
+                pixelRatio: 2
+              }
+            }
+          },
+          tooltip: {
+            show: true
+          },
+          legend: {
+            show: true,
+            bottom: 0
+          },
+          xAxis: {
+            data: time,
+            splitLine: {
+              show: false
+            }
+          },
+          yAxis: {
+          },
+          series: [{
+            name: '确诊人数增长量',
+            type: 'bar',
+            data: confirmList.reverse().slice(10),
+            animationDelay: function (idx) {
+              return idx * 10;
+            }
+          }, {
+            name: '疑似人数增长量',
+            type: 'bar',
+            data: susList.reverse().slice(10),
+            animationDelay: function (idx) {
+              return idx * 10 + 100;
+            }
+          }, {
+            name: '治愈人数增长量',
+            type: 'bar',
+            data: curedIncr.reverse().slice(10),
+            animationDelay: function (idx) {
+              return idx * 10 + 200;
+            }
+          }, {
+            name: '死亡人数增长量',
+            type: 'bar',
+            data: deadIncr.reverse().slice(10),
+            animationDelay: function (idx) {
+              return idx * 10 + 300;
+            }
+          }],
+          animationEasing: 'elasticOut',
+          animationDelayUpdate: function (idx) {
+            return idx * 100;
+          }
+        }
+
+      );
+
+
+    }
+
+    function setChinaAnimate() {
+      // // var option = []
+      // var options = []
+
+      var days = ['01-20', '01-21', '01-22', '01-23', '01-24', '01-25', '01-26', '01-27', '01-28', '01-29', '01-30','02-13'];
+
+      var province = ['湖北', '广东', '浙江', '湖南', '河南', '安徽', '重庆', '山东', '江西', '四川', '江苏', '北京', '福建', '上海', '广西', '河北', '陕西', '云南', '海南', '黑龙江', '辽宁', '山西', '天津', '甘肃', '内蒙古', '新疆', '宁夏', '吉林', '贵州', '青海', '西藏', '澳门', '香港', '台湾'];
+
+      var data = [
+        [270, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [375, 26, 5, 1, 1, 0, 5, 1, 2, 2, 0, 10, 0, 9, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [444, 32, 10, 9, 5, 4, 9, 6, 3, 8, 1, 14, 1, 16, 2, 1, 0, 1, 4, 2, 2, 1, 3, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0],
+        [549, 53, 43, 24, 9, 15, 27, 9, 7, 15, 9, 26, 5, 20, 13, 2, 3, 2, 8, 4, 4, 1, 5, 2, 1, 2, 2, 3, 3, 0, 0, 1, 2, 0],
+        [729, 78, 62, 43, 32, 39, 57, 21, 18, 28, 18, 36, 10, 33, 23, 8, 5, 5, 8, 9, 12, 6, 8, 4, 2, 3, 3, 4, 4, 0, 0, 2, 4, 2],
+        [1052, 98, 104, 69, 83, 60, 75, 39, 36, 44, 31, 51, 18, 40, 33, 13, 15, 11, 19, 15, 17, 9, 10, 7, 7, 4, 4, 4, 5, 1, 0, 3, 5, 4],
+        [1423, 146, 128, 100, 128, 70, 110, 63, 48, 69, 47, 68, 29, 53, 46, 18, 22, 16, 22, 21, 22, 13, 14, 14, 11, 5, 7, 6, 7, 4, 0, 4, 6, 6],
+        [2714, 188, 173, 143, 168, 106, 132, 87, 72, 90, 70, 80, 59, 66, 51, 33, 35, 26, 33, 30, 27, 20, 23, 19, 13, 10, 10, 8, 9, 6, 0, 6, 8, 7],
+        [3354, 241, 296, 221, 206, 152, 147, 121, 109, 108, 99, 91, 82, 80, 58, 48, 46, 51, 43, 37, 36, 27, 24, 24, 16, 13, 12, 9, 9, 6, 0, 6, 10, 8],
+        [4586, 272, 296, 221, 206, 152, 165, 130, 162, 108, 99, 111, 84, 96, 58, 48, 56, 55, 43, 38, 39, 35, 27, 24, 16, 13, 12, 9, 9, 6, 1, 7, 10, 8],
+        [5806, 354, 428, 277, 278, 200, 206, 158, 162, 142, 129, 121, 101, 128, 87, 65, 66, 76, 46, 44, 45, 39, 31, 29, 18, 14, 17, 14, 12, 8, 1, 7, 12, 9],
+        [48206, 1241, 1145, 968, 1169, 910, 525, 509, 872, 451, 570, 366, 279, 315, 222, 265, 229, 156, 157, 395, 116, 126, 117, 87, 61, 63, 64, 84, 135, 18, 1, 10, 51, 18],
+
+      ];
+
+
+
+// for(i=0;i<provinces.length;i++){
+//   for(j=0;j<days.length;j++){
+//     var yes=0
+//     for(x=0;x<AjaxData.results.length;x++){
+//       if(AjaxData.results[x].provinceShortName==provinces[i]){
+//         data[j][i] = AjaxData.results[x].confirmedCount
+//       }
+//     }
+
+    
+   
+//   }
+// }
+
+      var option = {
+        baseOption: {
+
+          timeline: {
+            axisType: 'category',
+            // realtime: false,
+            // loop: false,
+            autoPlay: true,
+            playInterval: 2000,
+            symbolSize: 12,
+            left: '5%',
+            right: '5%',
+            bottom: '0%',
+            width: '90%',
+            // controlStyle: {
+            //     position: 'left'
+            // },
+            data: days,
+            tooltip: {
+              formatter: days
+            },
+          },
+
+          tooltip: {
+            show: true,
+            formatter: function (params) {
+              return params.name + '：' + params.data['value']
+            },
+          },
+          visualMap: {
+            type: 'piecewise',
+            pieces: [{
+              min: 1001,
+              color: '#73240D'
+            },
+            {
+              min: 501,
+              max: 1000,
+              color: '#BB0000'
+            },
+            {
+              min: 251,
+              max: 500,
+              color: '#BD430A'
+            },
+            {
+              min: 101,
+              max: 250,
+              color: '#E08150'
+            },
+            {
+              min: 11,
+              max: 100,
+              color: '#E9B090'
+            },
+            {
+              min: 1,
+              max: 10,
+              color: '#F2DDD2'
+            },
+            {
+              value: 0,
+              color: 'white'
+            }
+            ],
+            orient: 'vertical',
+            itemWidth: 25,
+            itemHeight: 15,
+            showLabel: true,
+            seriesIndex: [0],
+
+            textStyle: {
+              color: '#7B93A7'
+            },
+            bottom: '10%',
+            left: "5%",
+          },
+          grid: {
+            right: '5%',
+            top: '20%',
+            bottom: '10%',
+            width: '20%'
+          },
+          xAxis: {
+            min: 0,
+            max: 4000,
+            show: false
+          },
+          yAxis: [{
+            inverse: true,
+            offset: '2',
+            type: 'category',
+            data: '',
+            nameTextStyle: {
+              color: '#fff'
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLabel: {
+              //rotate:45,
+              textStyle: {
+                fontSize: 14,
+                color: '#000000',
+              },
+              interval: 0
+            },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: '#333'
+              },
+            },
+            splitLine: {
+              show: false,
+              lineStyle: {
+                color: '#333'
+              }
+            },
+          }],
+          geo: {
+            map: 'china',
+            right: '35%',
+            left: '5%',
+            label: {
+              emphasis: {
+                show: false,
+              }
+            },
+            itemStyle: {
+              emphasis: {
+                areaColor: '#00FF00'
+              }
+            }
+          },
+          series: [{
+            name: 'mapSer',
+            type: 'map',
+            map: 'china',
+            roam: false,
+            geoIndex: 0,
+            label: {
+              show: false,
+            },
+          },
+          {
+            name: '',
+            type: 'bar',
+            zlevel: 2,
+            barWidth: '40%',
+            label: {
+              normal: {
+                show: true,
+                fontSize: 14,
+                position: 'right',
+                formatter: '{c}'
+              }
+            },
+          }
+          ],
+
+        },
+        animationDurationUpdate: 3000,
+        animationEasingUpdate: 'quinticInOut',
+        options: []
+      }
+
+      for (var n = 0; n < days.length; n++) {
+
+        var res = [];
+        for (j = 0; j < data[n].length; j++) {
+          res.push({
+            name: province[j],
+            value: data[n][j]
+          });
+        }
+        res.sort(function (a, b) {
+          return b.value - a.value;
+        }).slice(0, 6);
+
+        res.sort(function (a, b) {
+          return a.value - b.value;
+        });
+        var res1 = [];
+        var res2 = [];
+        for (t = 0; t < 10; t++) {
+          res1[t] = res[res.length - 1 - t].name;
+          res2[t] = res[res.length - 1 - t].value;
+        }
+        // console.log(res1);
+        // console.log("----------------");
+        // console.log(province);
+        option.options.push({
+          title: [{
+            text: days[n] + '新型冠状病毒全国感染人数',
+            textStyle: {
+              color: '#2D3E53',
+              fontSize: 28
+            },
+            left: 20,
+            top: 20,
+          },
+          {
+            show: true,
+            text: '感染人数前十的省份',
+            textStyle: {
+              color: '#2D3E53',
+              fontSize: 18
+            },
+            right: '10%',
+            top: '15%'
+          }
+          ],
+          yAxis: {
+            data: res1,
+          },
+          series: [{
+            type: 'map',
+            data: res
+          }, {
+            type: 'bar',
+            data: res2,
+            itemStyle: {
+              normal: {
+                color: function (params) {
+                  // build a color map as your need.
+                  var colorList = [{
+                    colorStops: [{
+                      offset: 0,
+                      color: '#FF0000' // 0% 处的颜色
+                    }, {
+                      offset: 1,
+                      color: '#990000' // 100% 处的颜色
+                    }]
+                  },
+                  {
+                    colorStops: [{
+                      offset: 0,
+                      color: '#00C0FA' // 0% 处的颜色
+                    }, {
+                      offset: 1,
+                      color: '#2F95FA' // 100% 处的颜色
+                    }]
+                  }
+                  ];
+                  if (params.dataIndex < 3) {
+                    return colorList[0]
+                  } else {
+                    return colorList[1]
+                  }
+                },
+              }
+            },
+          }]
+        });
+      }
+
+      chartMapAnimate.setOption(option)
+    }
+    
+    setChinaAnimate()
+
+
+
+    $("#change1").click(function(){
+      document.getElementById("back").style.display = 'none'
+      document.getElementById("china-map").style.display = 'none'
+      document.getElementById("ChinaMapAnimate").style.display = 'block'
+      document.getElementById("change1").style.backgroundColor = 'rgb(0, 161, 224)'
+      document.getElementById("change2").style.backgroundColor = 'rgb(116, 116, 116)'
+    })
+    $("#change2").click(function(){
+      document.getElementById("back").style.display = 'block'
+      document.getElementById("china-map").style.display = 'block'
+      document.getElementById("ChinaMapAnimate").style.display = 'none'
+      document.getElementById("change2").style.backgroundColor = 'rgb(0, 161, 224)'
+      document.getElementById("change1").style.backgroundColor = 'rgb(116, 116, 116)'
+    })
 
   </script>
 </body>
