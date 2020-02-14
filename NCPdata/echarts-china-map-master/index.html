@@ -6,10 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
   <title>ECharts China Map</title>
   <style>
-    body{
+    body {
       background-image: url(img/back-dark.jpg);
       background-size: cover;
     }
+
     #back {
       position: absolute;
       z-index: 1;
@@ -62,22 +63,23 @@
       /* border: 2px rgb(119, 0, 167) solid; */
     }
 
-    #change{
+    #change {
       position: absolute;
       right: 20px;
       z-index: 2;
     }
 
-    #change1{
-      padding: 10px  10px  10px 20px;
+    #change1 {
+      padding: 10px 10px 10px 20px;
       background-color: rgb(0, 161, 224);
       color: white;
       float: left;
-      border-radius: 100px 0  0 100px;
+      border-radius: 100px 0 0 100px;
       cursor: pointer;
     }
-    #change2{
-      padding:10px 20px 10px 10px;
+
+    #change2 {
+      padding: 10px 20px 10px 10px;
       background-color: rgb(116, 116, 116);
       color: white;
       float: left;
@@ -85,7 +87,8 @@
       cursor: pointer;
 
     }
-    #updateDataPanel{
+
+    #updateDataPanel {
       height: 150px;
       width: 500px;
       /* border: 2px rgb(119, 0, 167) solid; */
@@ -93,59 +96,152 @@
       left: -20px;
     }
 
-    .numberBlock{
+    .numberBlock {
       width: 100px;
       height: 100px;
       border-radius: 20px;
       background-color: wheat;
       float: left;
       margin-right: 20px;
-      padding:10px;
+      padding: 10px;
       color: white;
     }
-    #numberBlock1{
+
+    #numberBlock1 {
       position: relative;
-      top:0px;
-      background: linear-gradient(to bottom right,#0066ff, #00ffea);
-      box-shadow:0px 9px 15px #00ffea41;
+      top: 0px;
+      background: linear-gradient(to bottom right, #0066ff, #00ffea);
+      box-shadow: 0px 9px 15px #00ffea41;
       transition: 0.4s;
     }
-    #numberBlock1:hover{
+
+    #numberBlock1:hover {
       top: -10px;
-      box-shadow:0px 9px 15px #00ffea;
+      box-shadow: 0px 9px 15px #00ffea;
     }
-    #numberBlock2{
-      background: linear-gradient(to bottom right,#FA742B, #FCFF00);
-      box-shadow:0px 9px 15px rgba(251, 255, 0, 0.26);
+
+    #numberBlock2 {
+      background: linear-gradient(to bottom right, #FA742B, #FCFF00);
+      box-shadow: 0px 9px 15px rgba(251, 255, 0, 0.26);
       transition: 0.4s;
       position: relative;
-      top:0px;
+      top: 0px;
     }
-    #numberBlock2:hover{
+
+    #numberBlock2:hover {
       top: -10px;
-      box-shadow:0px 9px 15px #FCFF00;
+      box-shadow: 0px 9px 15px #FCFF00;
     }
-    #numberBlock3{
-      background: linear-gradient(to bottom right, rgb(23, 145, 54),#F0FF00);
-      box-shadow:0px 9px 15px rgba(251, 255, 0, 0.26);
+
+    #numberBlock3 {
+      background: linear-gradient(to bottom right, rgb(23, 145, 54), #F0FF00);
+      box-shadow: 0px 9px 15px rgba(251, 255, 0, 0.26);
       transition: 0.4s;
       position: relative;
-      top:0px;
+      top: 0px;
     }
-    #numberBlock3:hover{
+
+    #numberBlock3:hover {
       top: -10px;
-      box-shadow:0px 9px 15px #FCFF00;
+      box-shadow: 0px 9px 15px #FCFF00;
     }
-    #numberBlock4{
-      background: linear-gradient(to bottom right,#1b1b1b, #6d6d6d);
-      box-shadow:0px 9px 15px #6d6d6d59;
+
+    #numberBlock4 {
+      background: linear-gradient(to bottom right, #1b1b1b, #6d6d6d);
+      box-shadow: 0px 9px 15px #6d6d6d59;
       transition: 0.4s;
       position: relative;
-      top:0px;
+      top: 0px;
     }
-    #numberBlock4:hover{
+
+    #numberBlock4:hover {
       top: -10px;
-      box-shadow:0px 9px 15px #6d6d6d;
+      box-shadow: 0px 9px 15px #6d6d6d;
+    }
+
+    #show {
+      position: absolute;
+      width: 400px;
+      height: 760px;
+      background-color: white;
+      border-radius: 50px;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      overflow: hidden;
+      box-shadow: 0px 4px 20px #333333;
+      display: none;
+    }
+
+    #OutShow {
+      background-color: rgb(116, 116, 116);
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      width: 50px;
+      height: 50px;
+      border-radius: 100%;
+      margin: 0 auto;
+      transition: 0.4s;
+      cursor: pointer;
+      margin-top: 30px;
+    }
+
+    #OutShow:hover {
+      background-color: tomato;
+    }
+
+    #author {
+      color: white;
+      position: absolute;
+
+      width: 100px;
+      height: 30px;
+      z-index: 10;
+      text-align: center;
+      padding: 3px;
+      transition: 0.4s;
+      border-radius: 50px;
+      right: 0;
+      cursor: pointer;
+    }
+
+    #author:hover {
+      color: white;
+      background: linear-gradient(to bottom right, #0059ff, #00ffc8);
+
+    }
+
+    #news {
+      color: white;
+      position: absolute;
+      top: 40px;
+      width: 100px;
+      height: 30px;
+      z-index: 10;
+      text-align: center;
+      padding: 3px;
+      transition: all 0.4s;
+      border-radius: 50px;
+      right: 0;
+      cursor: pointer;
+    }
+
+    #news:hover {
+      color: white;
+      background: linear-gradient(to bottom right, #0059ff, #00ffc8);
+
+    }
+    #loadingALL{
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.692);
+      position: absolute;
+      z-index: 20;
+      font-size: 40px;
     }
   </style>
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
@@ -158,7 +254,30 @@
 </head>
 
 <body>
+  <div id="loadingALL" class="text-center">
+    <img src="img/load.gif" style="margin: 0 auto; border-radius: 50px;width:600px"><br>
+    正在加载最新数据...<br>大约需要20s</div>
+  <div id="author">
+    作者
+  </div>
+  <div id="news">
+    更多新闻
+  </div>
+  <div id="show" class="text-center">
+    <img src="img/showBack.jpg" width="400px">
 
+    <h3><br>Author</h3>
+    <p><a href="https://github.com/Darius18">z.chi</a></p>
+    <h3>Special Thanks</h3>
+    <p>张重生老师<br>栗哲远<br>刘子涵<br>吕建彩</p>
+    <p>项目地址：<a
+        href="https://github.com/Darius18/nCov-Data-visualization-web">https://github.com/Darius18/nCov-Data-visualization-web</a>
+    </p>
+
+    <h5><br>祝您平安，中国加油。</h5>
+    <div id="OutShow">×</div>
+
+  </div>
 
   <div class="container-fluid">
     <div class="row clearfix" style="margin-bottom: 20px;margin-top: 10px;">
@@ -196,25 +315,25 @@
             <div id="updateDataPanel">
               <div class="numberBlock" id="numberBlock1">
                 确诊人数
-                <h4>123223</h4>
-                新增
+                <h4>NONE</h4>
+                <p>新增</p>
               </div>
               <div class="numberBlock" id="numberBlock2">
                 疑似人数
-                <h4>123223</h4>
-                新增
+                <h4>NONE</h4>
+                <p>新增</p>
               </div>
 
               <div class="numberBlock" id="numberBlock3">
                 治愈人数
-                <h4>123223</h4>
-                新增
+                <h4>NONE</h4>
+                <p>新增</p>
               </div>
 
               <div class="numberBlock" id="numberBlock4">
                 死亡人数
-                <h4>123223</h4>
-                新增
+                <h4>NONE</h4>
+                <p>新增</p>
               </div>
 
             </div>
@@ -264,12 +383,12 @@
 
   <script>
     //初始化图表
-    var chartMap = echarts.init(document.getElementById('china-map'),'chalk');
-    var chartMapAnimate = echarts.init(document.getElementById('ChinaMapAnimate'),'chalk');
-    var timePie = echarts.init(document.getElementById('timePie'),'chalk');
-    var timeLineChart = echarts.init(document.getElementById('timeLine'),'chalk')
-    var timeCalendar = echarts.init(document.getElementById('timeCalendar'),'chalk')
-    var incri = echarts.init(document.getElementById('incri'),'chalk')
+    var chartMap = echarts.init(document.getElementById('china-map'), 'chalk');
+    var chartMapAnimate = echarts.init(document.getElementById('ChinaMapAnimate'), 'chalk');
+    var timePie = echarts.init(document.getElementById('timePie'), 'chalk');
+    var timeLineChart = echarts.init(document.getElementById('timeLine'), 'chalk')
+    var timeCalendar = echarts.init(document.getElementById('timeCalendar'), 'chalk')
+    var incri = echarts.init(document.getElementById('incri'), 'chalk')
     var oBack = document.getElementById("back");
     //初始化数据
     var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan', 'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang', 'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing', 'xianggang', 'aomen'];
@@ -303,7 +422,7 @@
     var curedIncr = new Array()
     var deadIncr = new Array()
 
-    updateTimeHTML=""
+    updateTimeHTML = ""
 
     function day(x) {
       a = parseInt(x)
@@ -320,15 +439,15 @@
       D = date.getDate();
       return Y + M + D
     }
-    function getALLday(x){
+    function getALLday(x) {
       var date = new Date(x);
-Y = date.getFullYear() + '-';
-M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-D = date.getDate() + ' ';
-h = date.getHours() + ':';
-m = date.getMinutes() + ':';
-s = date.getSeconds(); 
-return (Y+M+D+h+m+s)
+      Y = date.getFullYear() + '-';
+      M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+      D = date.getDate() + ' ';
+      h = date.getHours() + ':';
+      m = date.getMinutes() + ':';
+      s = date.getSeconds();
+      return (Y + M + D + h + m + s)
     }
 
 
@@ -369,13 +488,13 @@ return (Y+M+D+h+m+s)
     //获取全国的信息
     $.ajax({
       type: "GET", //GET还是POST,不是必须
-      url: "data/dataAreaNew.json",
+      url: "https://lab.isaaclin.cn/nCoV/api/area?latest=1",
       success: function (data) {
         get_allChina_provinces(data)
-        for(i=0;i<data.results.length;i++){
-          if(data.results[i].provinceShortName=='湖北'){
+        for (i = 0; i < data.results.length; i++) {
+          if (data.results[i].provinceShortName == '湖北') {
             updateTimeHTML = getALLday(data.results[i].updateTime)
-            document.getElementById("updateTime").innerHTML="数据更新时间："+updateTimeHTML
+            document.getElementById("updateTime").innerHTML = "数据更新时间：" + updateTimeHTML
           }
 
         }
@@ -403,9 +522,20 @@ return (Y+M+D+h+m+s)
     //获取全国的时间序列信息
     $.ajax({
       type: "GET", //GET还是POST,不是必须
-      url: "data/overall.json",
+      url: "https://lab.isaaclin.cn/nCoV/api/overall?latest=0",
       success: function (data) {
+      document.getElementById("loadingALL").style.display = 'none'
+
         //首先更新一下最新的消息
+        $("#numberBlock1").find('h4').html(data.results[0].confirmedCount)
+        $("#numberBlock2").find('h4').html(data.results[0].suspectedCount)
+        $("#numberBlock3").find('h4').html(data.results[0].curedCount)
+        $("#numberBlock4").find('h4').html(data.results[0].deadCount)
+        $("#numberBlock1").find('p').html("新增 " + data.results[0].confirmedIncr)
+        $("#numberBlock2").find('p').html("新增 " + data.results[0].suspectedIncr)
+        $("#numberBlock3").find('p').html("新增 " + data.results[0].curedIncr)
+        $("#numberBlock4").find('p').html("新增 " + data.results[0].deadIncr)
+
 
         //然后获取
         for (i = 0, j = 0; i < (data.results).length; i++) {
@@ -447,9 +577,10 @@ return (Y+M+D+h+m+s)
     function initEcharts(pName, Chinese_, dataArray) {
 
       var tmpdata_OverAll_confirmed = pName === "china" ? data_OverAll_confirmed : dataArray;
-      console.log("hello!!!已完成地图的初始化")
-      console.log(tmpdata_OverAll_confirmed)
+      // console.log("hello!!!已完成地图的初始化")
+      // console.log(tmpdata_OverAll_confirmed)
       var option = {
+
         tooltip: {//信息提示框
           show: true,
           type: 'shadow',
@@ -460,6 +591,7 @@ return (Y+M+D+h+m+s)
           left: 'center'
         },
         series: {
+
           name: Chinese_ || pName,
           type: 'map',
           mapType: pName,
@@ -498,6 +630,9 @@ return (Y+M+D+h+m+s)
           left: 26,
           bottom: 10,
           showLabel: !0,
+          textStyle:{
+            color:'white'
+          },
           text: ["高", "低"],
           pieces: [
             {
@@ -531,8 +666,7 @@ return (Y+M+D+h+m+s)
             }
           ],
           show: !0
-        },
-        loadingText: '正在加载',
+        }
       };
       chartMap.setOption(option);
 
@@ -575,8 +709,8 @@ return (Y+M+D+h+m+s)
           //ajax获取该省份的数据
           $.ajax({
             type: "GET",
-            url: "data/dataHenanAllTime.json",
-            //url,
+            url: url,
+            //url,"data/dataHenanAllTime.json"
             success: function (data) {
               console.log(data.results[0])
               chartMap.hideLoading();
@@ -640,7 +774,7 @@ return (Y+M+D+h+m+s)
     ///////////////////////////////////////////////////////////以下是其他图表
 
     function setRanklist(provincesList, confirmList, cureList, deadList) {
-      var ranklist = echarts.init(document.getElementById('ranklist'),'chalk');
+      var ranklist = echarts.init(document.getElementById('ranklist'), 'chalk');
 
       ranklistOption = {
         title: {
@@ -654,34 +788,34 @@ return (Y+M+D+h+m+s)
           }
         },
         dataZoom: [
-            // {
-            //   type: 'slider',
-            //   show: true,
-            //   xAxisIndex: [0],
-            //   start: 20,
-            //   end: 100
-            // },
-            {
-              type: 'slider',
-              show: true,
-              yAxisIndex: [0],
-              left: '93%',
-              start: 0,
-              end: 60
-            },
-            // {
-            //   type: 'inside',
-            //   xAxisIndex: [0],
-            //   start: 20,
-            //   end: 100
-            // },
-            {
-              type: 'inside',
-              yAxisIndex: [0],
-              start: 0,
-              end: 60
-            }
-          ],
+          // {
+          //   type: 'slider',
+          //   show: true,
+          //   xAxisIndex: [0],
+          //   start: 20,
+          //   end: 100
+          // },
+          {
+            type: 'slider',
+            show: true,
+            yAxisIndex: [0],
+            left: '93%',
+            start: 50,
+            end: 100
+          },
+          // {
+          //   type: 'inside',
+          //   xAxisIndex: [0],
+          //   start: 20,
+          //   end: 100
+          // },
+          {
+            type: 'inside',
+            yAxisIndex: [0],
+            start: 50,
+            end: 100
+          }
+        ],
         legend: {
           data: ['确诊数', '治愈数', '死亡数']
         },
@@ -705,15 +839,15 @@ return (Y+M+D+h+m+s)
             type: 'bar',
             data: confirmList,
             itemStyle: {
-            barBorderRadius: 50,
-            color: new echarts.graphic.LinearGradient(
+              barBorderRadius: 50,
+              color: new echarts.graphic.LinearGradient(
                 0, 0, 1, 0,
                 [
-                    {offset: 1, color: '#3C8CE7'},
-                    {offset: 0, color: '#2AFADF'}
+                  { offset: 1, color: '#3C8CE7' },
+                  { offset: 0, color: '#2AFADF' }
                 ]
-            )
-        },
+              )
+            },
           },
           {
             name: '治愈数',
@@ -743,62 +877,65 @@ return (Y+M+D+h+m+s)
             title: { text: time[i] + '疫情分布情况' },
             series: {
               data: [
-                { name: '确诊率', 
-                value: confirmList[i],
-                itemStyle:{
+                {
+                  name: '确诊率',
+                  value: confirmList[i],
+                  itemStyle: {
                     color: new echarts.graphic.LinearGradient(
-                0.5, 0,0 , 0.5,
-                [
-                    {offset: 1, color: '#0066ff'},
-                    {offset: 0, color: '#00ffea'}
-                ]),
+                      0.5, 0, 0, 0.5,
+                      [
+                        { offset: 1, color: '#0066ff' },
+                        { offset: 0, color: '#00ffea' }
+                      ]),
                     shadowBlur: 20,
                     shadowColor: '#0066ff',
 
                   },
-              },
-                { name: '治愈率', value: cureList[i],
-                itemStyle:{
+                },
+                {
+                  name: '治愈率', value: cureList[i],
+                  itemStyle: {
                     color: new echarts.graphic.LinearGradient(
-                0.5, 0,0 , 0.5,
-                [
-                    {offset: 1, color: '#F0FF00'},
-                    {offset: 0, color: '#58CFFB'}
-                ]),
+                      0.5, 0, 0, 0.5,
+                      [
+                        { offset: 1, color: '#F0FF00' },
+                        { offset: 0, color: '#58CFFB' }
+                      ]),
                     shadowBlur: 20,
                     shadowColor: '#F0FF00',
 
                   }
-              },
-                { name: '死亡率', value: deadList[i] ,
-                itemStyle:{
+                },
+                {
+                  name: '死亡率', value: deadList[i],
+                  itemStyle: {
                     color: new echarts.graphic.LinearGradient(
-                0.5, 0,0 , 0.5,
-                [
-                    {offset: 1, color: 'black'},
-                    {offset: 0, color: 'gray'}
-                ]),
+                      0.5, 0, 0, 0.5,
+                      [
+                        { offset: 1, color: 'black' },
+                        { offset: 0, color: 'gray' }
+                      ]),
                     shadowBlur: 20,
                     shadowColor: 'gray',
 
                   }
-              },
-                { 
-                  name: '疑似率', 
+                },
+                {
+                  name: '疑似率',
                   value: susList[i],
-                  itemStyle:{
+                  itemStyle: {
                     color: new echarts.graphic.LinearGradient(
-                0.5, 0,0 , 0.5,
-                [
-                    {offset: 1, color: '#FA742B'},
-                    {offset: 0, color: '#FCFF00'}
-                ]),
+                      0.5, 0, 0, 0.5,
+                      [
+                        { offset: 1, color: '#FA742B' },
+                        { offset: 0, color: '#FCFF00' }
+                      ]),
                     shadowBlur: 20,
                     shadowColor: '#FA742B',
 
                   },
                 },
-                ]
+              ]
             }
           }
           options.push(tmp)
@@ -834,8 +971,8 @@ return (Y+M+D+h+m+s)
               },
               legend: {
                 show: true,
-                left:0,
-                top:40,
+                left: 0,
+                top: 40,
                 orient: 'vertical'
               },
               title: {
@@ -859,34 +996,34 @@ return (Y+M+D+h+m+s)
                   // roseType: 'area',
 
                   label: {
-                    color: 'red',
+                    color: 'white',
                     position: 'outer',
                     alignTo: 'none',
                     bleedMargin: 5
                   },
                   labelLine: {
                     lineStyle: {
-                      color: 'red'
+                      color: 'white'
                     },
                     smooth: 0.2,
                     length: 10,
                     length2: 20
                   },
                   itemStyle: [
-                  // {
-                  //   color: 'black',
-                  //   shadowBlur: 200,
-                  //   shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  // },{
-                  //   color: '#908CB8',
-                  //   shadowBlur: 200,
-                  //   shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  // },{
-                  //   color: '#FFC051',
-                  //   shadowBlur: 200,
-                  //   shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  // }
-                ],
+                    // {
+                    //   color: 'black',
+                    //   shadowBlur: 200,
+                    //   shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    // },{
+                    //   color: '#908CB8',
+                    //   shadowBlur: 200,
+                    //   shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    // },{
+                    //   color: '#FFC051',
+                    //   shadowBlur: 200,
+                    //   shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    // }
+                  ],
 
                   animationType: 'scale',
                   animationEasing: 'elasticOut',
@@ -992,16 +1129,16 @@ return (Y+M+D+h+m+s)
               type: 'line',
               stack: '总量',
               data: susList,
-        //       itemStyle: {
-        //     barBorderRadius: 5,
-        //     color: new echarts.graphic.LinearGradient(
-        //         0, 0, 0, 1,
-        //         [
-        //             {offset: 0, color: '#14c8d4'},
-        //             {offset: 1, color: '#43eec6'}
-        //         ]
-        //     )
-        // },
+              //       itemStyle: {
+              //     barBorderRadius: 5,
+              //     color: new echarts.graphic.LinearGradient(
+              //         0, 0, 0, 1,
+              //         [
+              //             {offset: 0, color: '#14c8d4'},
+              //             {offset: 1, color: '#43eec6'}
+              //         ]
+              //     )
+              // },
             },
           ]
         }
@@ -1090,16 +1227,16 @@ return (Y+M+D+h+m+s)
                 borderWidth: 0.5
               },
               yearLabel: {
-                show:false,
+                show: false,
                 margin: 40
               },
               dayLabel: {
-                color:'#cecece',
+                color: '#cecece',
                 firstDay: 1,
                 nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
               },
               monthLabel: {
-                color:'#cecece',
+                color: '#cecece',
                 nameMap: 'cn',
                 margin: 20
               },
@@ -1114,16 +1251,16 @@ return (Y+M+D+h+m+s)
                 borderWidth: 0.5
               },
               yearLabel: {
-                show:false,
+                show: false,
                 margin: 40
               },
               dayLabel: {
-                color:'#cecece',
+                color: '#cecece',
                 firstDay: 1,
                 nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
               },
               monthLabel: {
-                color:'#cecece',
+                color: '#cecece',
                 nameMap: 'cn',
                 margin: 20
               },
@@ -1209,15 +1346,15 @@ return (Y+M+D+h+m+s)
               return idx * 10;
             },
             itemStyle: {
-            barBorderRadius: 50,
-            color: new echarts.graphic.LinearGradient(
+              barBorderRadius: 50,
+              color: new echarts.graphic.LinearGradient(
                 0, 0, 0, 1,
                 [
-                    {offset: 1, color: '#F05F57'},
-                    {offset: 0, color: 'red'}
+                  { offset: 1, color: '#F05F57' },
+                  { offset: 0, color: 'red' }
                 ]
-            )
-        },
+              )
+            },
           }, {
             name: '疑似人数增长量',
             type: 'bar',
@@ -1226,16 +1363,16 @@ return (Y+M+D+h+m+s)
               return idx * 10 + 100;
             },
             itemStyle: {
-            barBorderRadius: 50,
-            color: new echarts.graphic.LinearGradient(
+              barBorderRadius: 50,
+              color: new echarts.graphic.LinearGradient(
                 0, 0, 0, 1,
                 [
-                    {offset: 1, color: '#FCCF31'},
-                    {offset: 0, color: '#F55555'}
+                  { offset: 1, color: '#FCCF31' },
+                  { offset: 0, color: '#F55555' }
                 ]
-            )
-        },
-            
+              )
+            },
+
           }, {
             name: '治愈人数增长量',
             type: 'bar',
@@ -1244,15 +1381,15 @@ return (Y+M+D+h+m+s)
               return idx * 10 + 200;
             },
             itemStyle: {
-            barBorderRadius: 50,
-            color: new echarts.graphic.LinearGradient(
+              barBorderRadius: 50,
+              color: new echarts.graphic.LinearGradient(
                 0, 0, 0, 1,
                 [
-                    {offset: 0, color: '#14c8d4'},
-                    {offset: 1, color: '#43eec6'}
+                  { offset: 0, color: '#14c8d4' },
+                  { offset: 1, color: '#43eec6' }
                 ]
-            )
-        },
+              )
+            },
           }, {
             name: '死亡人数增长量',
             type: 'bar',
@@ -1261,15 +1398,15 @@ return (Y+M+D+h+m+s)
               return idx * 10 + 300;
             },
             itemStyle: {
-            barBorderRadius: 50,
-            color: new echarts.graphic.LinearGradient(
+              barBorderRadius: 50,
+              color: new echarts.graphic.LinearGradient(
                 0, 0, 0, 1,
                 [
-                    {offset: 1, color: 'blue'},
-                    {offset: 0, color: 'black'}
+                  { offset: 1, color: 'blue' },
+                  { offset: 0, color: 'black' }
                 ]
-            )
-        },
+              )
+            },
           }],
           animationEasing: 'elasticOut',
           animationDelayUpdate: function (idx) {
@@ -1286,7 +1423,7 @@ return (Y+M+D+h+m+s)
       // // var option = []
       // var options = []
 
-      var days = ['01-20', '01-21', '01-22', '01-23', '01-24', '01-25', '01-26', '01-27', '01-28', '01-29', '01-30','02-13'];
+      var days = ['01-20', '01-21', '01-22', '01-23', '01-24', '01-25', '01-26', '01-27', '01-28', '01-29', '01-30', '02-13'];
 
       var province = ['湖北', '广东', '浙江', '湖南', '河南', '安徽', '重庆', '山东', '江西', '四川', '江苏', '北京', '福建', '上海', '广西', '河北', '陕西', '云南', '海南', '黑龙江', '辽宁', '山西', '天津', '甘肃', '内蒙古', '新疆', '宁夏', '吉林', '贵州', '青海', '西藏', '澳门', '香港', '台湾'];
 
@@ -1308,19 +1445,19 @@ return (Y+M+D+h+m+s)
 
 
 
-// for(i=0;i<provinces.length;i++){
-//   for(j=0;j<days.length;j++){
-//     var yes=0
-//     for(x=0;x<AjaxData.results.length;x++){
-//       if(AjaxData.results[x].provinceShortName==provinces[i]){
-//         data[j][i] = AjaxData.results[x].confirmedCount
-//       }
-//     }
+      // for(i=0;i<provinces.length;i++){
+      //   for(j=0;j<days.length;j++){
+      //     var yes=0
+      //     for(x=0;x<AjaxData.results.length;x++){
+      //       if(AjaxData.results[x].provinceShortName==provinces[i]){
+      //         data[j][i] = AjaxData.results[x].confirmedCount
+      //       }
+      //     }
 
-    
-   
-//   }
-// }
+
+
+      //   }
+      // }
 
       var option = {
         baseOption: {
@@ -1454,30 +1591,30 @@ return (Y+M+D+h+m+s)
 
             itemStyle: {
               normal: {
-              //shadowBlur: 50,
-              shadowColor: 'rgba(128, 217, 248, 1)',
-              shadowOffsetX: -2,
-                            shadowOffsetY: 2,
-                            shadowBlur: 5,
-              borderColor: 'rgba(147, 235, 248, 1)',
-            },
+                //shadowBlur: 50,
+                shadowColor: 'rgba(128, 217, 248, 1)',
+                shadowOffsetX: -2,
+                shadowOffsetY: 2,
+                shadowBlur: 5,
+                borderColor: 'rgba(147, 235, 248, 1)',
+              },
               emphasis: {
-                borderColor:new echarts.graphic.LinearGradient(
-                0, 0, 0, 1,
-                [
-                    {offset: 1, color: '#0066ff'},
-                    {offset: 0, color: '#00ffea'}
-                ]),
+                borderColor: new echarts.graphic.LinearGradient(
+                  0, 0, 0, 1,
+                  [
+                    { offset: 1, color: '#0066ff' },
+                    { offset: 0, color: '#00ffea' }
+                  ]),
                 borderWidth: 3,
-                areaColor: 
+                areaColor:
                   new echarts.graphic.LinearGradient(
-                0, 0, 0, 1,
-                [
-                    {offset: 0, color: '#0066ff'},
-                    {offset: 1, color: '#00ffea'}
-                ]
-            )
-                
+                    0, 0, 0, 1,
+                    [
+                      { offset: 0, color: '#0066ff' },
+                      { offset: 1, color: '#00ffea' }
+                    ]
+                  )
+
               }
             }
           },
@@ -1605,24 +1742,33 @@ return (Y+M+D+h+m+s)
 
       chartMapAnimate.setOption(option)
     }
-    
+
     setChinaAnimate()
 
 
 
-    $("#change1").click(function(){
+    $("#change1").click(function () {
       document.getElementById("back").style.display = 'none'
       document.getElementById("china-map").style.display = 'none'
       document.getElementById("ChinaMapAnimate").style.display = 'block'
       document.getElementById("change1").style.backgroundColor = 'rgb(0, 161, 224)'
       document.getElementById("change2").style.backgroundColor = 'rgb(116, 116, 116)'
     })
-    $("#change2").click(function(){
+    $("#change2").click(function () {
       document.getElementById("back").style.display = 'block'
       document.getElementById("china-map").style.display = 'block'
       document.getElementById("ChinaMapAnimate").style.display = 'none'
       document.getElementById("change2").style.backgroundColor = 'rgb(0, 161, 224)'
       document.getElementById("change1").style.backgroundColor = 'rgb(116, 116, 116)'
+    })
+    $("#OutShow").click(function () {
+      document.getElementById("show").style.display = 'none'
+    })
+    $("#author").click(function () {
+      document.getElementById("show").style.display = 'block'
+    })
+    $("#news").click(function () {
+      alert("SORRY...\nThis module has been shut down, thanks for ur attention.\nlove,zc")
     })
 
   </script>
