@@ -235,7 +235,8 @@
       background: linear-gradient(to bottom right, #0059ff, #00ffc8);
 
     }
-    #loadingALL{
+
+    #loadingALL {
       width: 100%;
       height: 100%;
       background-color: rgba(255, 255, 255, 0.692);
@@ -454,7 +455,7 @@
     //取得全国省份和对应的数量
     function get_allChina_provinces(data) {
       for (i = 0, j = 0; i < (data.results).length; i++) {
-        if (data.results[i].country == "中国") {
+        if (data.results[i].countryName == "中国") {
           provinceFromAjax[j] = data.results[i].provinceShortName
           confirmedCountOfProvince[j] = data.results[i].confirmedCount
           curedCountOfProvince[j] = data.results[i].curedCount
@@ -485,46 +486,17 @@
     }
 
 
-    //获取全国的信息
-    $.ajax({
-      type: "GET", //GET还是POST,不是必须
-      url: "https://lab.isaaclin.cn/nCoV/api/area?latest=1",
-      success: function (data) {
-        get_allChina_provinces(data)
-        for (i = 0; i < data.results.length; i++) {
-          if (data.results[i].provinceShortName == '湖北') {
-            updateTimeHTML = getALLday(data.results[i].updateTime)
-            document.getElementById("updateTime").innerHTML = "数据更新时间：" + updateTimeHTML
-          }
-
-        }
-        for (i = 0; i < provinceFromAjax.length; i++) {
-          var tmp = {
-            name: provinceFromAjax[i],
-            value: confirmedCountOfProvince[i]
-          };
-          data_OverAll_confirmed.push(tmp);
-        }
-        console.log(data_OverAll_confirmed)
-
-        oBack.onclick = function () {
-          setRanklist(provinceFromAjax, confirmedCountOfProvince, curedCountOfProvince, deadCoundOfProvince)
-          initEcharts("china", "中国");
-        };
-
-        initEcharts("china", "中国");
-        setRanklist(provinceFromAjax, confirmedCountOfProvince, curedCountOfProvince, deadCoundOfProvince)
-      }
-    });
-
 
 
     //获取全国的时间序列信息
     $.ajax({
       type: "GET", //GET还是POST,不是必须
+      // crossDomain: true,
       url: "https://lab.isaaclin.cn/nCoV/api/overall?latest=0",
+      // dataType: 'jsonp',
+      // url:"data/overall.json",
       success: function (data) {
-      document.getElementById("loadingALL").style.display = 'none'
+        document.getElementById("loadingALL").style.display = 'none'
 
         //首先更新一下最新的消息
         $("#numberBlock1").find('h4').html(data.results[0].confirmedCount)
@@ -568,6 +540,55 @@
 
         setIncri(timeSequence.slice(10), confirmedIncr, curedIncr, deadIncr, suspectedIncr)
 
+
+        //获取全国的信息
+        $.ajax({
+          type: "GET", //GET还是POST,不是必须
+          url: "https://lab.isaaclin.cn/nCoV/api/area?latest=1",
+          // url:"data/dataAreaNew.json",
+          // dataType: 'jsonp',
+          success: function (dataa) {
+            // console.log(data)
+            // document.getElementById("loadingALL").style.display = 'none'
+
+            get_allChina_provinces(dataa)
+            for (i = 0; i < dataa.results.length; i++) {
+              if (dataa.results[i].provinceShortName == '湖北') {
+                updateTimeHTML = getALLday(dataa.results[i].updateTime)
+                document.getElementById("updateTime").innerHTML = "数据更新时间：" + updateTimeHTML
+              }
+
+            }
+            for (i = 0; i < provinceFromAjax.length; i++) {
+              var tmp = {
+                name: provinceFromAjax[i],
+                value: confirmedCountOfProvince[i]
+              };
+              data_OverAll_confirmed.push(tmp);
+            }
+            console.log(data_OverAll_confirmed)
+
+            oBack.onclick = function () {
+              setRanklist(provinceFromAjax, confirmedCountOfProvince, curedCountOfProvince, deadCoundOfProvince)
+              initEcharts("china", "中国");
+            };
+
+            initEcharts("china", "中国");
+            setRanklist(provinceFromAjax, confirmedCountOfProvince, curedCountOfProvince, deadCoundOfProvince)
+
+
+
+          },
+          error: function (jqXHR) {
+            alert("OOPS! 服务器出现了一个小问题：" + jqXHR.status);
+          }
+        });
+
+
+
+      },
+      error: function (jqXHR) {
+        alert("OOPS! 服务器出现了一个小问题：" + jqXHR.status);
       }
     });
 
@@ -630,8 +651,8 @@
           left: 26,
           bottom: 10,
           showLabel: !0,
-          textStyle:{
-            color:'white'
+          textStyle: {
+            color: 'white'
           },
           text: ["高", "低"],
           pieces: [
@@ -710,7 +731,8 @@
           $.ajax({
             type: "GET",
             url: url,
-            //url,"data/dataHenanAllTime.json"
+            dataType: 'jsonp',
+            //url:"data/dataHenanAllTime.json"
             success: function (data) {
               console.log(data.results[0])
               chartMap.hideLoading();
